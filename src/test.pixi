@@ -1,0 +1,55 @@
+_totalTests = 0
+_setUpFn = {}
+_tearDownFn = {}
+_failed = 0
+
+fn setUp($func) {
+  _setUpFn = $func
+}
+
+fn tearDown($func) {
+  _tearDownFn = $func
+}
+
+fn test($desc, $func) {
+  printf("Running... %s\n", $desc)
+  _setUpFn()
+  _totalTests + 1
+  
+  $result = $func()
+  if $result { _failed + 1}
+
+  _tearDownFn()
+}
+
+fn expectNum($actual, $expected) {
+  $result = $actual == $expected
+  if !$result {
+    printf("Test failed: %d != %d \n", $actual, $expected);
+  }
+  ret($result)
+}
+
+fn expectStr($actual, $expected) {
+  $result = strcmp($actual, $expected)
+  if $result {
+    printf("Test failed: %s != %s \n", $actual, $expected);
+  }
+  ret($result)
+}
+
+fn expectCnt($actual, $expected) {
+  $result = get_size($actual) == get_size($expected)
+  if !$result { 
+    printf("Test failed container size: %d != %d\n", get_size($actual), get_size($expected))
+    ret(1)
+  }
+  for ($i = 0; $i < get_size($actual); $i + 1) {
+    if $actual[$i] != $expected[$i] { goto fail}
+  }
+  if !$result {
+    fail:
+    printf("Test failed item %d: %d != %d \n", $i,  $actual[$i], $expected[$i]);
+  }
+  ret($result)
+}

@@ -1,0 +1,2 @@
+#!/bin/sh
+../pixilang/pixilang3/bin/linux_x86_64/pixilang -cfg "nowin" "$@"
